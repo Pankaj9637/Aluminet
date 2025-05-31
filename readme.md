@@ -64,32 +64,11 @@ FLASK_APP=app.py
 FLASK_ENV=development
 SECRET_KEY=your-secret-key
 
-## Database Models
-
-User
-Institution
-Event
-ForumPost
-ForumComment
-InterestGroup
-GroupMembership
-GroupPost
-PhotoGallery
-Photo
-Connection
-Message
-JobPosting
+##  HOW TO USE 
+1. CREATE INSTITUTIONAL LOGIN WITH ADMIN REGISTRATION.
+2.LOGIN WITH ADMIN LOGIN TO CONFIRM
+3. TO CREATE THE STUDENT LOGIN YOU NEED INSTITUTE EMAIL ADDRESS . 
+4. TO CREATE ALUMINI LOGIN IT NEEDED TO BE VERIFIED BY THE INSTITUTE ADMIN .
+5. EXPLORE THINGS LIKE CHAT , FORUM ,JOB ETC
 
 
-## Project Structure
-
-project/
-├── app.py              # Main application file
-├── requirements.txt    # Project dependencies
-├── instance/          # Instance-specific files
-│   └── alumni.db     # SQLite database
-├── static/           # Static files
-│   ├── css/         # Stylesheets
-│   ├── js/          # JavaScript files
-│   └── profile_pictures/ # User uploads
-└── templates/        # HTML templates
