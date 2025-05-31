@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Photo Galleries</h1>
+        <a href="{{ url_for('create_gallery') }}" class="btn btn-primary">Create New Gallery</a>
+    </div>
+    
+    <div class="row">
+        {% for gallery in galleries %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ gallery.title }}</h5>
+                    <p class="card-text">{{ gallery.description[:100] }}{% if gallery.description|length > 100 %}...{% endif %}</p>
+                    {% if gallery.event %}
+                        <p class="text-muted">Event: {{ gallery.event.title }}</p>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    <a href="{{ url_for('view_gallery', gallery_id=gallery.id) }}" class="btn btn-primary">View Gallery</a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No photo galleries have been created yet. Be the first to create one!
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

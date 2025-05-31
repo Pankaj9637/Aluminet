@@ -1,0 +1,48 @@
+.admin-link {
+    color: #fff;
+    background-color: #dc3545;
+    padding: 8px 15px;
+    border-radius: 4px;
+    margin-right: 10px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.admin-link:hover {
+    background-color: #c82333;
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Admin Dashboard specific styles */
+.card {
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+
+.table th {
+    background-color: #f8f9fa;
+}
+
+.btn-success {
+    margin-right: 5px;
+}
+
+/* Responsive table */
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* Flash messages styling */
+.flash-messages {
+    margin: 20px 0;
+}
+
+.alert {
+    margin-bottom: 10px;
+} 

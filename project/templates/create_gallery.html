@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Create Photo Gallery</h1>
+    
+    <form method="POST">
+        <div class="form-group">
+            <label for="title">Gallery Title</label>
+            <input type="text" class="form-control" id="title" name="title" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="event_id">Associated Event (Optional)</label>
+            <select class="form-control" id="event_id" name="event_id">
+                <option value="">None</option>
+                {% for event in events %}
+                    <option value="{{ event.id }}">{{ event.title }} ({{ event.date.strftime('%Y-%m-%d') }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Create Gallery</button>
+    </form>
+</div>
+{% endblock %}

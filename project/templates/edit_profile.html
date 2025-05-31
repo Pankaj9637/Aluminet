@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Edit Profile</h2>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body text-center">
+                        {% if current_user.profile_picture %}
+                            <img src="{{ url_for('static', filename='profile_pictures/' + current_user.profile_picture) }}" 
+                                 class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                        {% else %}
+                            <div class="rounded-circle mb-3 bg-light" style="width: 150px; height: 150px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-user fa-3x text-muted"></i>
+                            </div>
+                        {% endif %}
+                        <div class="form-group">
+                            <label for="profile_picture">Profile Picture</label>
+                            <input type="file" class="form-control" id="profile_picture" name="profile_picture" accept="image/*">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Basic Information</h4>
+                        
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ current_user.name }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ current_user.email }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="graduation_year">Graduation Year</label>
+                            <input type="number" class="form-control" id="graduation_year" name="graduation_year" value="{{ current_user.graduation_year }}">
+                        </div>
+                        
+                        {% if current_user.role == 'alumni' %}
+                        <div class="form-group">
+                            <label for="company">Current Company</label>
+                            <input type="text" class="form-control" id="company" name="company" value="{{ current_user.company }}">
+                        </div>
+                        {% endif %}
+                        
+                        <div class="form-group">
+                            <label for="skills">Skills (comma-separated)</label>
+                            <input type="text" class="form-control" id="skills" name="skills" value="{{ current_user.skills }}" placeholder="e.g., Python, JavaScript, Project Management">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="bio">Bio</label>
+                            <textarea class="form-control" id="bio" name="bio" rows="4">{{ current_user.bio }}</textarea>
+                        </div>
+                        
+                        <h4 class="card-title mt-4 mb-4">Social Media</h4>
+                        
+                        <div class="form-group">
+                            <label for="linkedin_url">LinkedIn Profile URL</label>
+                            <input type="url" class="form-control" id="linkedin_url" name="linkedin_url" value="{{ current_user.linkedin_url }}" placeholder="https://linkedin.com/in/your-profile">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="twitter_url">Twitter Profile URL</label>
+                            <input type="url" class="form-control" id="twitter_url" name="twitter_url" value="{{ current_user.twitter_url }}" placeholder="https://twitter.com/your-profile">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="github_url">GitHub Profile URL</label>
+                            <input type="url" class="form-control" id="github_url" name="github_url" value="{{ current_user.github_url }}" placeholder="https://github.com/your-profile">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="location">Location</label>
+                            <input type="text" class="form-control" id="location" name="location" value="{{ current_user.location }}" placeholder="City, Country">
+                        </div>
+                        
+                        <h4 class="card-title mt-4 mb-4">Work Experience</h4>
+                        
+                        {% for i in range(1, 4) %}
+                        <div class="work-experience-section mb-3">
+                            <h5>Experience {{ i }}</h5>
+                            <div class="form-group">
+                                <label for="company_{{ i }}">Company</label>
+                                <input type="text" class="form-control" id="company_{{ i }}" name="company_{{ i }}" 
+                                       value="{{ work_experience[i-1].company if work_experience|length >= i else '' }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="position_{{ i }}">Position</label>
+                                <input type="text" class="form-control" id="position_{{ i }}" name="position_{{ i }}"
+                                       value="{{ work_experience[i-1].position if work_experience|length >= i else '' }}">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="start_date_{{ i }}">Start Date</label>
+                                        <input type="date" class="form-control" id="start_date_{{ i }}" name="start_date_{{ i }}"
+                                               value="{{ work_experience[i-1].start_date if work_experience|length >= i else '' }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="end_date_{{ i }}">End Date</label>
+                                        <input type="date" class="form-control" id="end_date_{{ i }}" name="end_date_{{ i }}"
+                                               value="{{ work_experience[i-1].end_date if work_experience|length >= i else '' }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        <h4 class="card-title mt-4 mb-4">Education History</h4>
+                        
+                        {% for i in range(1, 3) %}
+                        <div class="education-section mb-3">
+                            <h5>Education {{ i }}</h5>
+                            <div class="form-group">
+                                <label for="edu_institution_{{ i }}">Institution</label>
+                                <input type="text" class="form-control" id="edu_institution_{{ i }}" name="edu_institution_{{ i }}"
+                                       value="{{ education_history[i-1].institution if education_history|length >= i else '' }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="degree_{{ i }}">Degree</label>
+                                <input type="text" class="form-control" id="degree_{{ i }}" name="degree_{{ i }}"
+                                       value="{{ education_history[i-1].degree if education_history|length >= i else '' }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="field_{{ i }}">Field of Study</label>
+                                <input type="text" class="form-control" id="field_{{ i }}" name="field_{{ i }}"
+                                       value="{{ education_history[i-1].field if education_history|length >= i else '' }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="edu_grad_year_{{ i }}">Graduation Year</label>
+                                <input type="number" class="form-control" id="edu_grad_year_{{ i }}" name="edu_grad_year_{{ i }}"
+                                       value="{{ education_history[i-1].grad_year if education_history|length >= i else '' }}">
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        <h4 class="card-title mt-4 mb-4">Change Password</h4>
+                        
+                        <div class="form-group">
+                            <label for="current_password">Current Password</label>
+                            <input type="password" class="form-control" id="current_password" name="current_password">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="new_password">New Password</label>
+                            <input type="password" class="form-control" id="new_password" name="new_password">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    .work-experience-section, .education-section {
+        border: 1px solid #dee2e6;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+    
+    .work-experience-section h5, .education-section h5 {
+        color: #495057;
+        margin-bottom: 15px;
+    }
+</style>
+{% endblock %} 

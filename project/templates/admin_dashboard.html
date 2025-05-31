@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Admin Dashboard</h2>
+        <span class="badge bg-primary">{{ institution.name }}</span>
+    </div>
+    
+    <div class="row">
+        <!-- University Information Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h4 class="mb-0">University Information</h4>
+                </div>
+                <div class="card-body">
+                    <div class="info-item mb-3">
+                        <h6 class="text-muted mb-1">Name</h6>
+                        <p class="mb-0">{{ institution.name }}</p>
+                    </div>
+                    <div class="info-item mb-3">
+                        <h6 class="text-muted mb-1">Email Domain</h6>
+                        <p class="mb-0">{{ institution.email_domain }}</p>
+                    </div>
+                    <div class="info-item mb-3">
+                        <h6 class="text-muted mb-1">Website</h6>
+                        <a href="{{ institution.website }}" target="_blank" class="text-decoration-none">{{ institution.website }}</a>
+                    </div>
+                    <div class="info-item mb-3">
+                        <h6 class="text-muted mb-1">Address</h6>
+                        <p class="mb-0">{{ institution.address }}</p>
+                    </div>
+                    <div class="info-item">
+                        <h6 class="text-muted mb-1">Registration Date</h6>
+                        <p class="mb-0">{{ institution.created_at.strftime('%B %d, %Y') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Statistics Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h4 class="mb-0">User Statistics</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="stat-card bg-primary text-white p-3 rounded">
+                                <h6 class="mb-1">Total Users</h6>
+                                <h3 class="mb-0">{{ student_count + alumni_count + admin_count }}</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="stat-card bg-success text-white p-3 rounded">
+                                <h6 class="mb-1">Students</h6>
+                                <h3 class="mb-0">{{ student_count }}</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="stat-card bg-info text-white p-3 rounded">
+                                <h6 class="mb-1">Alumni</h6>
+                                <h3 class="mb-0">{{ alumni_count }}</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="stat-card bg-warning text-dark p-3 rounded">
+                                <h6 class="mb-1">Admins</h6>
+                                <h3 class="mb-0">{{ admin_count }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Pending Alumni Approvals</h5>
+        </div>
+        <div class="card-body">
+            {% if pending_alumni %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Graduation Year</th>
+                                <th>Company</th>
+                                <th>Registered On</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for alumni in pending_alumni %}
+                            <tr>
+                                <td>{{ alumni.name }}</td>
+                                <td>{{ alumni.email }}</td>
+                                <td>{{ alumni.graduation_year }}</td>
+                                <td>{{ alumni.company or 'Not specified' }}</td>
+                                <td>{{ alumni.created_at.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    <form method="POST" action="{{ url_for('approve_alumni', user_id=alumni.id) }}" style="display: inline;">
+                                        <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                    </form>
+                                    <form method="POST" action="{{ url_for('reject_alumni', user_id=alumni.id) }}" style="display: inline;">
+                                        <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted">No pending alumni approvals.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Pending Institutions</h5>
+        </div>
+        <div class="card-body">
+            {% if pending_institutions %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Institution Name</th>
+                                <th>Email Domain</th>
+                                <th>Website</th>
+                                <th>Address</th>
+                                <th>Registered On</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for inst in pending_institutions %}
+                            <tr>
+                                <td>{{ inst.name }}</td>
+                                <td>{{ inst.email_domain }}</td>
+                                <td><a href="{{ inst.website }}" target="_blank">{{ inst.website }}</a></td>
+                                <td>{{ inst.address }}</td>
+                                <td>{{ inst.created_at.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    <form method="POST" action="{{ url_for('verify_institution', institution_id=inst.id) }}" style="display: inline;">
+                                        <button type="submit" class="btn btn-success btn-sm">Verify</button>
+                                    </form>
+                                    <form method="POST" action="{{ url_for('reject_institution', institution_id=inst.id) }}" style="display: inline;">
+                                        <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted">No pending institutions to verify.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Verified Institutions</h5>
+        </div>
+        <div class="card-body">
+            {% if verified_institutions %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Institution Name</th>
+                                <th>Email Domain</th>
+                                <th>Website</th>
+                                <th>Address</th>
+                                <th>Verified On</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for inst in verified_institutions %}
+                            <tr>
+                                <td>{{ inst.name }}</td>
+                                <td>{{ inst.email_domain }}</td>
+                                <td><a href="{{ inst.website }}" target="_blank">{{ inst.website }}</a></td>
+                                <td>{{ inst.address }}</td>
+                                <td>{{ inst.created_at.strftime('%Y-%m-%d') }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted">No verified institutions yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .stat-card {
+        transition: transform 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .info-item {
+        transition: all 0.3s ease;
+    }
+    
+    .info-item:hover {
+        transform: translateX(5px);
+    }
+    
+    .badge {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+    }
+</style>
+{% endblock %} 

@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container profile-container">
+    <div class="profile-header">
+        <div class="profile-cover">
+            <div class="profile-cover-overlay"></div>
+        </div>
+        
+        <div class="profile-content">
+            <div class="row">
+                <!-- Left side - Profile image and basic info -->
+                <div class="col-md-3">
+                    <div class="profile-avatar-container">
+                        {% if user.profile_picture %}
+                            <img src="{{ url_for('static', filename='profile_pictures/' + user.profile_picture) }}" 
+                                class="profile-avatar"
+                                alt="Profile Picture">
+                        {% else %}
+                            <div class="profile-avatar">
+                                <i class="fas fa-user fa-3x text-light"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="profile-rating text-center mt-3">
+                        <div class="rating-score">
+                            <span class="score-value">{{ user.graduation_year }}</span>
+                        </div>
+                        <div class="rating-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-actions mt-3 text-center">
+                        {% if user.id != current_user.id %}
+                            {% if connection_status == 'not_connected' %}
+                                <form action="{{ url_for('request_connection', user_id=user.id) }}" method="POST">
+                                    <button type="submit" class="btn connect-btn w-100 mb-2">Connect</button>
+                                </form>
+                            {% elif connection_status == 'pending' %}
+                                <button class="btn connect-btn w-100 mb-2" disabled>Request Sent</button>
+                            {% elif connection_status == 'accepted' %}
+                                <a href="{{ url_for('new_message', user_id=user.id) }}" class="btn message-btn w-100 mb-2">Send Message</a>
+                            {% elif connection_status == 'received_pending' %}
+                                <form action="{{ url_for('accept_connection', user_id=user.id) }}" method="POST">
+                                    <button type="submit" class="btn connect-btn w-100 mb-2">Accept Request</button>
+                                </form>
+                            {% endif %}
+                        {% else %}
+                            <a href="{{ url_for('edit_profile') }}" class="btn connect-btn w-100 mb-2">Edit Profile</a>
+                        {% endif %}
+                        
+                        <button class="btn btn-outline-primary w-100 contacts-btn">
+                            <i class="fas fa-address-book me-2"></i> Contacts
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Right side - User details -->
+                <div class="col-md-9">
+                    <div class="profile-info">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h1 class="profile-name">{{ user.name }}</h1>
+                                <p class="profile-title">{{ user.role|title }} {% if user.company %} at {{ user.company }}{% endif %}</p>
+                                <p class="profile-location">
+                                    <i class="fas fa-map-marker-alt me-2"></i> 
+                                    {% if user.location %}{{ user.location }}{% else %}Not specified{% endif %}
+                                </p>
+                            </div>
+                            
+                            <div class="profile-social-links">
+                                {% if user.linkedin_url %}
+                                    <a href="{{ user.linkedin_url }}" target="_blank" class="social-link">
+                                        <i class="fab fa-linkedin-in"></i>
+                                    </a>
+                                {% endif %}
+                                
+                                {% if user.twitter_url %}
+                                    <a href="{{ user.twitter_url }}" target="_blank" class="social-link">
+                                        <i class="fab fa-twitter"></i>
+                                    </a>
+                                {% endif %}
+                                
+                                {% if user.github_url %}
+                                    <a href="{{ user.github_url }}" target="_blank" class="social-link">
+                                        <i class="fab fa-github"></i>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Tabs for different sections -->
+                        <ul class="nav nav-tabs profile-tabs" id="profileTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="timeline-tab" data-bs-toggle="tab" data-bs-target="#timeline" type="button" role="tab" aria-controls="timeline" aria-selected="true">
+                                    <i class="fas fa-stream me-2"></i> Timeline
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="about-tab" data-bs-toggle="tab" data-bs-target="#about" type="button" role="tab" aria-controls="about" aria-selected="false">
+                                    <i class="fas fa-user me-2"></i> About
+                                </button>
+                            </li>
+                        </ul>
+                        
+                        <div class="tab-content profile-tab-content" id="profileTabsContent">
+                            <!-- Timeline Tab -->
+                            <div class="tab-pane fade show active" id="timeline" role="tabpanel" aria-labelledby="timeline-tab">
+                                <div class="contact-info-section">
+                                    <h3 class="section-title">Contact Information</h3>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="info-item">
+                                                <div class="info-label">Email:</div>
+                                                <div class="info-value">{{ user.email }}</div>
+                                            </div>
+                                            
+                                            {% if user.company %}
+                                            <div class="info-item">
+                                                <div class="info-label">Company:</div>
+                                                <div class="info-value">{{ user.company }}</div>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            {% if user.graduation_year %}
+                                            <div class="info-item">
+                                                <div class="info-label">Graduation Year:</div>
+                                                <div class="info-value">{{ user.graduation_year }}</div>
+                                            </div>
+                                            {% endif %}
+                                            
+                                            {% if user.location %}
+                                            <div class="info-item">
+                                                <div class="info-label">Location:</div>
+                                                <div class="info-value">{{ user.location }}</div>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="skills-section">
+                                    <h3 class="section-title">Skills</h3>
+                                    <div class="skills-container">
+                                        {% if user.skills %}
+                                            {% for skill in user.skills.split(',') %}
+                                                <span class="skill-badge">{{ skill.strip() }}</span>
+                                            {% endfor %}
+                                        {% else %}
+                                            <p class="text-muted">No skills listed</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- About Tab -->
+                            <div class="tab-pane fade" id="about" role="tabpanel" aria-labelledby="about-tab">
+                                <!-- Bio Section -->
+                                <div class="bio-section">
+                                    <h3 class="section-title">Bio</h3>
+                                    <div class="bio-text">
+                                        {% if user.bio %}
+                                            {{ user.bio }}
+                                        {% else %}
+                                            <p class="text-muted">No bio available</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <!-- Work Experience Section -->
+                                <div class="experience-section">
+                                    <h3 class="section-title">Work Experience</h3>
+                                    <div class="timeline">
+                                        {% if user.work_experience %}
+                                            {% for exp in user.work_experience|from_json %}
+                                                <div class="timeline-item">
+                                                    <h4 class="experience-title">{{ exp.position }}</h4>
+                                                    <p class="experience-company">{{ exp.company }}</p>
+                                                    <p class="experience-date">
+                                                        {{ exp.start_date }} - {{ exp.end_date if exp.end_date else 'Present' }}
+                                                    </p>
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <p class="text-muted">No work experience listed</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <!-- Education Section -->
+                                <div class="education-section">
+                                    <h3 class="section-title">Education</h3>
+                                    <div class="timeline">
+                                        {% if user.education_history %}
+                                            {% for edu in user.education_history|from_json %}
+                                                <div class="timeline-item">
+                                                    <h4 class="education-degree">{{ edu.degree }} in {{ edu.field }}</h4>
+                                                    <p class="education-institution">{{ edu.institution }}</p>
+                                                    <p class="education-date">Graduated: {{ edu.graduation_year }}</p>
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <p class="text-muted">No education history listed</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <h1>{{ group.name }}</h1>
+            <p>{{ group.description }}</p>
+            
+            {% if is_member %}
+                <form method="POST" action="{{ url_for('leave_group', group_id=group.id) }}" class="mb-4">
+                    <button type="submit" class="btn btn-outline-danger">Leave Group</button>
+                </form>
+                
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Post to Group</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('create_group_post', group_id=group.id) }}">
+                            <div class="form-group">
+                                <textarea class="form-control" name="content" rows="3" placeholder="Share something with the group..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Post</button>
+                        </form>
+                    </div>
+                </div>
+            {% else %}
+                <form method="POST" action="{{ url_for('join_group', group_id=group.id) }}" class="mb-4">
+                    <button type="submit" class="btn btn-primary">Join Group</button>
+                </form>
+            {% endif %}
+            
+            <h3>Recent Posts</h3>
+            {% for post in posts %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-2">
+                            {% if post.author.profile_picture %}
+                                <img src="{{ url_for('static', filename='profile_pictures/' + post.author.profile_picture) }}" class="rounded-circle mr-2" width="40" height="40">
+                            {% endif %}
+                            <div>
+                                <h6 class="mb-0">{{ post.author.name }}</h6>
+                                <small class="text-muted">{{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                            </div>
+                        </div>
+                        <p class="card-text">{{ post.content }}</p>
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-muted">No posts yet.</p>
+            {% endfor %}
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Members ({{ members|length }})</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for member in members %}
+                            <li class="list-group-item d-flex align-items-center">
+                                {% if member.profile_picture %}
+                                    <img src="{{ url_for('static', filename='profile_pictures/' + member.profile_picture) }}" class="rounded-circle mr-2" width="30" height="30">
+                                {% endif %}
+                                <a href="{{ url_for('view_profile', user_id=member.id) }}">{{ member.name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2>{{ 'Edit Event' if event else 'Add New Event' }}</h2>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('add_event') if not event else url_for('edit_event', event_id=event.id) }}">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Event Title</label>
+                            <input type="text" class="form-control" id="title" name="title" 
+                                   value="{{ event.title if event else '' }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Event Description</label>
+                            <textarea class="form-control" id="description" name="description" 
+                                      rows="4" required>{{ event.description if event else '' }}</textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="date" class="form-label">Event Date and Time</label>
+                            <input type="datetime-local" class="form-control" id="date" name="date" 
+                                   value="{{ event.date.strftime('%Y-%m-%dT%H:%M') if event else '' }}" required>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                {{ 'Update Event' if event else 'Create Event' }}
+                            </button>
+                            <a href="{{ url_for('events') }}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

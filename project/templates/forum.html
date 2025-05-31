@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Forum</h2>
+        <a href="{{ url_for('new_post') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> New Post
+        </a>
+    </div>
+    
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> This forum is specific to {{ current_user.institution.name }}. 
+        Only members of this institution can view and participate in discussions.
+    </div>
+    
+    {% if posts %}
+        <div class="row">
+            {% for post in posts %}
+            <div class="col-12 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ post.title }}</h5>
+                        <p class="card-text">{{ post.content }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                Posted by {{ post.author.name }} on {{ post.created_at.strftime('%B %d, %Y at %I:%M %p') }}
+                            </small>
+                            <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-outline-primary btn-sm">
+                                View Discussion
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert" style="color:#fff; font-weight:600;">
+            No discussions have been started yet for {{ current_user.institution.name }}.
+            Be the first to start a conversation!
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

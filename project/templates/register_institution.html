@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-container" style="max-width: 600px;">
+    <h2 class="text-center">Register Institution</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label class="form-label" for="name">Institution Name</label>
+            <input type="text" class="form-input" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="email_domain">Institution Email Domain</label>
+            <input type="text" class="form-input" id="email_domain" name="email_domain" 
+                   placeholder="example.edu" required>
+            <small class="form-text">Enter the email domain without @ (e.g., university.edu)</small>
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="website">Institution Website</label>
+            <input type="url" class="form-input" id="website" name="website" required>
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="address">Address</label>
+            <textarea class="form-input" id="address" name="address" rows="3" required></textarea>
+        </div>
+        
+        <h3 class="form-section-title">Admin Account Details</h3>
+        <div class="form-group">
+            <label class="form-label" for="admin_email">Admin Email</label>
+            <input type="email" class="form-input" id="admin_email" name="admin_email" required>
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="admin_name">Admin Name</label>
+            <input type="text" class="form-input" id="admin_name" name="admin_name" required>
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="admin_password">Admin Password</label>
+            <input type="password" class="form-input" id="admin_password" name="admin_password" required>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Register Institution</button>
+    </form>
+    <p class="text-center mt-4">
+        Already registered? <a href="{{ url_for('login') }}">Login here</a>
+    </p>
+</div>
+{% endblock %}

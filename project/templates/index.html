@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if is_landing_page %}
+<!-- Landing page content for non-authenticated users -->
+<div class="container" id="ww">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 text-center">
+            <h1 class="display-4">Welcome to AlumNet</h1>
+            <p class="lead">Connect with alumni from your institution, join interest groups, and attend events.</p>
+            <p>Join our growing community of students and alumni to expand your professional network.</p>
+            <div class="mt-4" style="display: flex;gap: 19px;">
+                <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg me-2">Login</a>
+                <a href="{{ url_for('register') }}" class="btn btn-secondary btn-lg">Register</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row" id="qws">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-users fa-3x mb-3 text-primary"></i>
+                    <h3>Connect</h3>
+                    <p>Build your professional network with alumni and students from your institution.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-calendar-alt fa-3x mb-3 text-primary"></i>
+                    <h3>Events</h3>
+                    <p>Participate in networking events, workshops, and reunions.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-comments fa-3x mb-3 text-primary"></i>
+                    <h3>Engage</h3>
+                    <p>Join interest groups and forums to discuss topics that matter to you.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Institution Registration Section -->
+    <div class="row mt-5">
+        <div class="col-md-10 offset-md-1">
+            <div class="card">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2>Are you representing an educational institution?</h2>
+                            <p class="lead mb-4">Register your institution on AlumNet to create a dedicated space for your alumni community.</p>
+                            <ul class="mb-4">
+                                <li>Create a verified network for your institution's alumni</li>
+                                <li>Manage alumni verification and approval</li>
+                                <li>Organize institution-specific events and groups</li>
+                                <li>Facilitate networking between current students and alumni</li>
+                            </ul>
+                            <a href="{{ url_for('register_institution') }}" class="btn btn-primary btn-lg">Register Your Institution</a>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <i class="fas fa-university fa-6x text-primary mb-3"></i>
+                            <p class="text-muted">Join the growing number of institutions on our platform</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<!-- Dashboard content for authenticated users -->
+<div class="container mt-4">
+    <h1>Welcome, {{ current_user.name }}!</h1>
+    
+    <div class="row mt-4">
+        <!-- Featured Alumni -->
+        {% if featured_alumni %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Featured Alumni</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        {% if featured_alumni.profile_picture %}
+                        <img src="{{ url_for('static', filename='profile_pictures/' + featured_alumni.profile_picture) }}" 
+                             class="rounded-circle me-3" width="60" height="60" alt="Profile Picture">
+                        {% else %}
+                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" 
+                             style="width: 60px; height: 60px; color: white;">
+                            {{ featured_alumni.name[0] }}
+                        </div>
+                        {% endif %}
+                        <div>
+                            <h5 class="mb-0">{{ featured_alumni.name }}</h5>
+                            <p class="text-muted mb-0">Class of {{ featured_alumni.graduation_year }}</p>
+                            {% if featured_alumni.company %}
+                            <p class="mb-0">{{ featured_alumni.company }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <a href="{{ url_for('view_profile', user_id=featured_alumni.id) }}" class="btn btn-outline-primary btn-sm">View Profile</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Upcoming Events -->
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Upcoming Events</h5>
+                </div>
+                <div class="card-body">
+                    {% if upcoming_events %}
+                        {% for event in upcoming_events %}
+                        <div class="mb-3">
+                            <h6>{{ event.title }}</h6>
+                            <p class="text-muted mb-1">{{ event.date.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                            <a href="{{ url_for('view_event', event_id=event.id) }}" class="btn btn-outline-primary btn-sm">Details</a>
+                        </div>
+                        {% if not loop.last %}<hr>{% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <p>No upcoming events.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Forum Posts -->
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Recent Forum Posts</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_posts %}
+                        {% for post in recent_posts %}
+                        <div class="mb-3">
+                            <h6>{{ post.title }}</h6>
+                            <p class="text-muted mb-1">By {{ post.author.name }} on {{ post.created_at.strftime('%B %d, %Y') }}</p>
+                            <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-outline-primary btn-sm">Read More</a>
+                        </div>
+                        {% if not loop.last %}<hr>{% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <p>No recent posts.</p>
+                    {% endif %}
+                    <a href="{{ url_for('forum') }}" class="btn btn-primary btn-sm mt-2">View All Posts</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Connection Requests -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Connection Requests</h5>
+                </div>
+                <div class="card-body">
+                    {% if pending_requests %}
+                        {% for connection in pending_requests %}
+                        <div class="d-flex align-items-center mb-3">
+                            {% if connection.requester.profile_picture %}
+                            <img src="{{ url_for('static', filename='profile_pictures/' + connection.requester.profile_picture) }}" 
+                                 class="rounded-circle me-3" width="50" height="50" alt="Profile Picture">
+                            {% else %}
+                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                 style="width: 50px; height: 50px; color: white;">
+                                {{ connection.requester.name[0] }}
+                            </div>
+                            {% endif %}
+                            <div class="flex-grow-1">
+                                <h6 class="mb-0">{{ connection.requester.name }}</h6>
+                                <p class="text-muted mb-0">{{ connection.requester.role.capitalize() }}</p>
+                            </div>
+                            <div>
+                                <form method="post" action="{{ url_for('accept_connection', connection_id=connection.id) }}" class="d-inline">
+                                    <button type="submit" class="btn btn-success btn-sm">Accept</button>
+                                </form>
+                                <form method="post" action="{{ url_for('reject_connection', connection_id=connection.id) }}" class="d-inline">
+                                    <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                </form>
+                            </div>
+                        </div>
+                        {% if not loop.last %}<hr>{% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <p>No pending connection requests.</p>
+                    {% endif %}
+                    <a href="{{ url_for('connections') }}" class="btn btn-primary btn-sm mt-2">Manage Connections</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Messages -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Recent Messages</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_messages %}
+                        {% for message in recent_messages %}
+                        <div class="mb-3">
+                            {% if message.sender_id == current_user.id %}
+                                <h6>To: {{ message.receiver.name }}</h6>
+                            {% else %}
+                                <h6>From: {{ message.sender.name }}</h6>
+                            {% endif %}
+                            <p class="mb-1">{{ message.content|truncate(50) }}</p>
+                            <p class="text-muted mb-1">{{ message.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                        </div>
+                        {% if not loop.last %}<hr>{% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <p>No recent messages.</p>
+                    {% endif %}
+                    <a href="{{ url_for('messages') }}" class="btn btn-primary btn-sm mt-2">View All Messages</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,91 @@
+
+/* Sidebar styling with dark theme */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 70px;
+    background-image: var(--surface-gradient);
+    border-right: 1px solid var(--border-color);
+    z-index: 10;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--card-shadow);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.sidebar:hover {
+    width: 250px;
+    border-radius: 0 4% 4% 0;
+}
+
+.sidebar-logo {
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    padding: 0 15px;
+}
+.head{
+    background-image: var(--primary-gradient);
+
+}
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    color: var(--text-color);
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-left: 3px solid transparent;
+}
+
+.sidebar-item:hover, .sidebar-item.active {
+    background-image: var(--hover-gradient);
+    color: var(--text-color);
+    border-left: 3px solid var(--primary-color);
+    transform: translateX(5px);
+}
+
+.sidebar-icon {
+    font-size: 1.25rem;
+    min-width: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.sidebar-text {
+    margin-left: 10px;
+    opacity: 0;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar:hover .sidebar-text {
+    opacity: 1;
+}
+
+/* Adjust main content to make room for sidebar */
+.main-content {
+    margin-left: 70px;
+    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 100vh;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 0;
+    }
+    
+    .sidebar:hover {
+        width: 200px;
+    }
+    
+    .main-content {
+        margin-left: 0;
+    }
+}

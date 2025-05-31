@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>{{ gallery.title }}</h1>
+    
+    {% if gallery.event %}
+        <p>Event: <a href="{{ url_for('view_event', event_id=gallery.event.id) }}">{{ gallery.event.title }}</a></p>
+    {% endif %}
+    
+    <p>{{ gallery.description }}</p>
+    
+    <div class="mb-4">
+        <a href="{{ url_for('upload_photo', gallery_id=gallery.id) }}" class="btn btn-primary">Upload Photo</a>
+    </div>
+    
+    <div class="row">
+        {% for photo in photos %}
+            <div class="col-md-4 mb-4" >
+                <div class="card" style="    height: auto;">
+                    <img src="{{ url_for('static', filename='profile_pictures/' + photo.filename) }}" class="card-img-top" alt="Gallery photo">
+                    <div class="card-body">
+                        {% if photo.caption %}
+                            <p class="card-text">{{ photo.caption }}</p>
+                        {% endif %}
+                        <p class="text-muted small">Uploaded by {{ photo.uploader.name }}</p>
+                        
+                        <!-- Add delete button if user is uploader or gallery creator -->
+                        {% if current_user.id == photo.uploader_id or current_user.id == gallery.creator_id %}
+                            <form method="POST" action="{{ url_for('delete_photo', photo_id=photo.id) }}" onsubmit="return confirm('Are you sure you want to delete this photo?');">
+                                <button type="submit" class="btn btn-sm btn-danger">Delete Photo</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12">
+                <p>No photos in this gallery yet.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

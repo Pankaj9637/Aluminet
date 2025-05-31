@@ -1,0 +1,129 @@
+/* Enhanced Sidebar Styling */
+.sidebar {
+    background: linear-gradient(180deg, #2c3e50 0%, #1a252f 100%);
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    overflow-y: auto;
+    height: 100vh;
+    position: fixed;
+    z-index: 1000;
+    width: 6rem;
+}
+
+.sidebar-logo {
+    padding: 20px 15px;
+    background: rgba(0, 0, 0, 0.2);
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-logo .sidebar-icon {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    border-radius: 10px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    margin-right: 12px;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.sidebar-logo .sidebar-text {
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #fff;
+}
+
+.sidebar-item {
+    margin: 5px 10px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    padding: 12px 15px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.sidebar-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+    color: #fff;
+}
+
+.sidebar-item.active {
+    background: linear-gradient(90deg, #3498db 0%, rgba(52, 152, 219, 0.7) 100%);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    color: #fff;
+}
+
+.sidebar-item .sidebar-icon {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    transition: all 0.3s ease;
+}
+
+.sidebar-item:hover .sidebar-icon {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-item.active .sidebar-icon {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-text {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* Adjust main content to accommodate fixed sidebar */
+.main-content {
+    margin-left: 200px;
+    transition: margin-left 0.3s ease;
+}
+.navbar>.container-fluid{
+    display: flex;
+    justify-content: space-around;
+}
+.navbar-brand{
+    margin-right: 40rem;
+
+}
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 70px;
+    }
+    
+    .sidebar-text {
+        display: none;
+    }
+    
+    .sidebar-logo .sidebar-text {
+        display: none;
+    }
+    
+    .main-content {
+        margin-left: 70px;
+    }
+    
+    .sidebar-item {
+        justify-content: center;
+    }
+    
+    .sidebar-item .sidebar-icon {
+        margin-right: 0;
+    }
+}

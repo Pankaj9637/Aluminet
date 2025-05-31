@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h2>{% if job %}Edit{% else %}Post{% endif %} Job</h2>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{% if job %}{{ url_for('edit_job', job_id=job.id) }}{% else %}{{ url_for('post_job') }}{% endif %}">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="title" class="form-label">Job Title*</label>
+                        <input type="text" class="form-control" id="title" name="title" value="{{ job.title if job else '' }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="company" class="form-label">Company*</label>
+                        <input type="text" class="form-control" id="company" name="company" value="{{ job.company if job else '' }}" required>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="location" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="location" name="location" value="{{ job.location if job else '' }}" placeholder="e.g., New York, NY or Remote">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="salary_range" class="form-label">Salary Range</label>
+                        <input type="text" class="form-control" id="salary_range" name="salary_range" value="{{ job.salary_range if job else '' }}" placeholder="e.g., $50,000 - $70,000">
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="description" class="form-label">Job Description*</label>
+                    <textarea class="form-control" id="description" name="description" rows="6" required>{{ job.description if job else '' }}</textarea>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="requirements" class="form-label">Requirements</label>
+                    <textarea class="form-control" id="requirements" name="requirements" rows="4">{{ job.requirements if job else '' }}</textarea>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="application_link" class="form-label">Application Link</label>
+                        <input type="url" class="form-control" id="application_link" name="application_link" value="{{ job.application_link if job else '' }}" placeholder="https://example.com/apply">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="expires_at" class="form-label">Expiration Date</label>
+                        <input type="date" class="form-control" id="expires_at" name="expires_at" value="{{ job.expires_at.strftime('%Y-%m-%d') if job and job.expires_at else '' }}">
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> {% if job %}Update{% else %}Post{% endif %} Job
+                    </button>
+                    <a href="{{ url_for('jobs') }}" class="btn btn-outline-secondary ms-2">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#description, #requirements').summernote({
+            placeholder: 'Enter details here...',
+            tabsize: 2,
+            height: 200,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ]
+        });
+    });
+</script>
+{% endblock %}
